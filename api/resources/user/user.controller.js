@@ -60,7 +60,7 @@ module.exports = {
             }
 
             else {
-                const token = await jwt.sign({name,email,phonenumber,address,password}
+                const token = await jwt.sign({name,email,phonenumber,address,password,gender}
                     ,process.env.JWT_ACC_ACTIVATE, {expiresIn:'20m'});
 
                 const resetUrl = `${req.protocol}://${req.get('host')}/api/v1/users/activate/${token}`;
@@ -212,7 +212,7 @@ module.exports = {
                                           <!-- COPY -->
                                             <tr>
                                               <td bgcolor="#ffffff" align="left" style="padding: 20px 30px 20px 30px; color: #666666; font-family: &apos;Lato&apos;, Helvetica, Arial, sans-serif; font-size: 12px; font-weight: 400; line-height: 25px;">
-                                                <p style="margin: 0;"><a href="http://thetheme.io/" target="_blank" style="color: #17b3a3;">${resetUrl}</a></p>
+                                                <p style="margin: 0;"><a href="${resetUrl}" target="_blank" style="color: #17b3a3;">${resetUrl}</a></p>
                                               </td>
                                             </tr>
                                           <!-- COPY -->
