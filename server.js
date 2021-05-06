@@ -60,7 +60,7 @@ app.use(limiter);
 app.use(hpp());
 
 // //enable cors
-// app.use(cors({credentials: true, origin: `http://127.0.0.1:5500`}));
+app.use(cors({credentials: true, origin: `*`}));
 
 app.use('/api/v1', restRouter);
 
