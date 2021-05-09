@@ -3,11 +3,11 @@ const mongoosePaginate = require('mongoose-paginate');
 
 let SessionSchema = new mongoose.Schema({
     startTime : {
-        type : Date,
+        type : String,
         required : true
     },
     endTime : {
-        type : Date,
+        type : String,
         required : true
     },
     availability : {

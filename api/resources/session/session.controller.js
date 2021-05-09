@@ -24,11 +24,15 @@ module.exports =  {
                 });
 
             if(oldSession.length > 0){
+                const data = req.body;
+                const startTime = data.startTime;
+                const endTime = data.endTime;
+                const getTime = time => new Date(2021,5,9, time.subString(0,2), time.subString(3,5), 0, 0);
                 for (let i=0; i<oldSession.length; i++){
-                    if((oldSession[i].startTime >= req.body.startTime) && (oldSession[i].startTime < req.body.startTime)){
+                    if((getTime(oldSession[i].startTime) >= getTime(startTime)) && (getTime(oldSession[i].startTime) < getTime(startTime))){
                         return res.status(404).send({'error':'This time is not free'});
                     }
-                    if((oldSession[i].startTime >= req.body.endTime) && (oldSession[i].endTime < req.body.endTime)){
+                    if((getTime(oldSession[i].startTime) >= getTime(endTime)) && (getTime(oldSession[i].endTime) < getTime(endTime))){
                         return res.status(404).send({'error':'This time is not free'});
                     }
                 }
