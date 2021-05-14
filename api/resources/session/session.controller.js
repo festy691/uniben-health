@@ -11,13 +11,12 @@ module.exports =  {
             if(!req.body.startTime) return res.status(400).send({'error':'Start Time cannot be null'});
             if(!req.body.endTime) return res.status(400).send({'error':'End Time cannot be null'});
 
-            const user = await UserModel.findOne({user:req.body.user});
+            const user = await UserModel.findOne({_id:req.body.user});
 
             if(!user){
                 return res.status(404).send({'error':'User not found'});
             }
-
-            const oldSession = await UserModel.find(
+            const oldSession = await SessionModel.find(
                 {
                     user:req.body.user,
                     sessionDate:req.body.sessionDate
@@ -61,7 +60,7 @@ module.exports =  {
     async rescheduleSession (req,res){
         try {
 
-            const sess = await UserModel.findOne({_id:req.params.id});
+            const sess = await UserModel.findOne({_id:req.body.user});
 
             if(!req.body.user) return res.status(400).send({'error':'User cannot be null'});
             if(!req.body.sessionDate) return res.status(400).send({'error':'Session Date cannot be null'});
@@ -72,7 +71,7 @@ module.exports =  {
                 return res.status(404).send({'error':'Session not found'});
             }
 
-            const oldSession = await UserModel.findOne(
+            const oldSession = await SessionModel.findOne(
                 {
                     user:req.body.user,
                     sessionDate:req.body.sessionDate
