@@ -26,3 +26,6 @@ sessionRouter.route('/mine/:patient')
 
 sessionRouter.route('/today/:date')
     .get(protect, sessionController.findAllTodaySession);
+    
+sessionRouter.route('/reschedule/:id')
+.get(protect, authorize('admin','doctor'), sessionController.findAllTodaySession);

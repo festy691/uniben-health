@@ -11,7 +11,7 @@ module.exports =  {
             if(!req.body.startTime) return res.status(400).send({'error':'Start Time cannot be null'});
             if(!req.body.endTime) return res.status(400).send({'error':'End Time cannot be null'});
 
-            const user = await UserModel.findOne({_id:req.body.user});
+            const user = await UserModel.findOne({user:req.body.user});
 
             if(!user){
                 return res.status(404).send({'error':'User not found'});
@@ -19,7 +19,7 @@ module.exports =  {
 
             const oldSession = await UserModel.find(
                 {
-                    _id:req.body.user,
+                    user:req.body.user,
                     sessionDate:req.body.sessionDate
                 });
 
@@ -50,6 +50,60 @@ module.exports =  {
                 }
                 else{
                     return res.status(200).send({"success":"Session Created"});
+                }
+            });
+
+        } catch (err) {
+            res.status(400).send({"error":err});
+        }
+    },
+
+    async rescheduleSession (req,res){
+        try {
+
+            const sess = await UserModel.findOne({_id:req.params.id});
+
+            if(!req.body.user) return res.status(400).send({'error':'User cannot be null'});
+            if(!req.body.sessionDate) return res.status(400).send({'error':'Session Date cannot be null'});
+            if(!req.body.startTime) return res.status(400).send({'error':'Start Time cannot be null'});
+            if(!req.body.endTime) return res.status(400).send({'error':'End Time cannot be null'});
+
+            if(!sess){
+                return res.status(404).send({'error':'Session not found'});
+            }
+
+            const oldSession = await UserModel.findOne(
+                {
+                    user:req.body.user,
+                    sessionDate:req.body.sessionDate
+                });
+
+            if(oldSession.length > 0){
+                const data = req.body;
+                const startTime = data.startTime;
+                const endTime = data.endTime;
+                const getTime = time => new Date(2021,5,9, time.subString(0,2), time.subString(3,5), 0, 0);
+                for (let i=0; i<oldSession.length; i++){
+                    if((getTime(oldSession[i].startTime) >= getTime(startTime)) && (getTime(oldSession[i].startTime) < getTime(startTime))){
+                        return res.status(404).send({'error':'This time is not free'});
+                    }
+                    if((getTime(oldSession[i].startTime) >= getTime(endTime)) && (getTime(oldSession[i].endTime) < getTime(endTime))){
+                        return res.status(404).send({'error':'This time is not free'});
+                    }
+                }
+            }
+            
+            if (req.body.startTime) sess.startTime = req.body.startTime;
+            if (req.body.startTime) sess.endTime = req.body.endTime;
+            if (req.body.startTime) sess.sessionDate = req.body.sessionDate;
+            if (req.body.startTime) sess.user = req.body.user;
+
+            await sess.save((err,doc)=>{
+                if(err){
+                    return res.status(400).send({'error':err});
+                }
+                else{
+                    return res.status(200).send({"success":"Session Rescheduled"});
                 }
             });
 
