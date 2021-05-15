@@ -16,6 +16,7 @@ module.exports =  {
             if(!user){
                 return res.status(404).send({'error':'User not found'});
             }
+            
             const oldSession = await SessionModel.find(
                 {
                     user:req.body.user,
@@ -26,12 +27,12 @@ module.exports =  {
                 const data = req.body;
                 const startTime = data.startTime;
                 const endTime = data.endTime;
-                const getTime = time => new Date(2021,5,9, time.subString(0,2), time.subString(3,5), 0, 0);
+
                 for (let i=0; i<oldSession.length; i++){
-                    if((getTime(oldSession[i].startTime) >= getTime(startTime)) && (getTime(oldSession[i].startTime) < getTime(startTime))){
+                    if((getTime(oldSession[i].startTime) >= getTime(startTime)) && (getTime(oldSession[i].endTime) > getTime(startTime))){
                         return res.status(404).send({'error':'This time is not free'});
                     }
-                    if((getTime(oldSession[i].startTime) >= getTime(endTime)) && (getTime(oldSession[i].endTime) < getTime(endTime))){
+                    if((getTime(oldSession[i].startTime) <= getTime(endTime)) && (getTime(oldSession[i].endTime) >= getTime(endTime))){
                         return res.status(404).send({'error':'This time is not free'});
                     }
                 }
@@ -83,10 +84,10 @@ module.exports =  {
                 const endTime = data.endTime;
                 const getTime = time => new Date(2021,5,9, time.subString(0,2), time.subString(3,5), 0, 0);
                 for (let i=0; i<oldSession.length; i++){
-                    if((getTime(oldSession[i].startTime) >= getTime(startTime)) && (getTime(oldSession[i].startTime) < getTime(startTime))){
+                    if((getTime(oldSession[i].startTime) >= getTime(startTime)) && (getTime(oldSession[i].endTime) > getTime(startTime))){
                         return res.status(404).send({'error':'This time is not free'});
                     }
-                    if((getTime(oldSession[i].startTime) >= getTime(endTime)) && (getTime(oldSession[i].endTime) < getTime(endTime))){
+                    if((getTime(oldSession[i].startTime) <= getTime(endTime)) && (getTime(oldSession[i].endTime) >= getTime(endTime))){
                         return res.status(404).send({'error':'This time is not free'});
                     }
                 }
@@ -271,4 +272,8 @@ module.exports =  {
             return res.status(400).send({"error":e});
         }
     },
+}
+function getTime(time) {
+    console.log("time");
+    return new Date("01/01/2000 "+time);
 }
