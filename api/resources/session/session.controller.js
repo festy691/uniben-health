@@ -126,7 +126,7 @@ module.exports =  {
                 else{
                     return res.status(400).send({"error":err});
                 }
-            });
+            }).populate('user', '_id name image phonenumber email').populate('patient', '_id name image phonenumber email');
         } catch (e) {
             return res.status(400).send({"error":e});
         }
@@ -143,7 +143,7 @@ module.exports =  {
                 else{
                     res.status(400).send({"error":err});
                 }
-            });
+            }).populate('user', '_id name image phonenumber email').populate('patient', '_id name image phonenumber email');
         } catch (e) {
             res.status(400).send({"error":e});
         }
@@ -158,7 +158,7 @@ module.exports =  {
                 else{
                     return res.status(400).send({"error":err});
                 }
-            });
+            }).populate('user', '_id name image phonenumber email').populate('patient', '_id name image phonenumber email');
         } catch (err) {
             return res.status(400).send({"error":err});
         }
@@ -173,7 +173,7 @@ module.exports =  {
                 else{
                     return res.status(400).send({"error":err});
                 }
-            }).populate('user', '_id name image phonenumber email');
+            }).populate('user', '_id name image phonenumber email').populate('patient', '_id name image phonenumber email');
         } catch (err) {
             return res.status(400).send({"error":err});
         }
@@ -194,7 +194,7 @@ module.exports =  {
                 else{
                     return res.status(400).send({"error":err});
                 }
-            });
+            }).populate('user', '_id name image phonenumber email').populate('patient', '_id name image phonenumber email');
         } catch (err) {
             return res.status(400).send({"error":err});
         }
