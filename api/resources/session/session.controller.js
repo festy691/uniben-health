@@ -114,7 +114,12 @@ module.exports =  {
 
     async getMySessions(req,res){
         try {
-            await SessionModel.find({user:req.query.user},(err, docs)=>{
+            var date = new Date();
+            date.setHours(0,0,0,0);
+            date = date.toISOString()
+
+            console.log(date);
+            await SessionModel.find({user:req.query.user, sessionDate: {$gte: date}},(err, docs)=>{
                 if(!err){
                     if (docs) return res.status(200).send(docs);
                 }
@@ -248,21 +253,12 @@ module.exports =  {
     async deleteOneSession(req,res){
         try {
             let {id} = req.params;
-            SessionModel.findOne(({_id: id}),(err, doc)=>{
-                if(!err){
-                    if (!doc) return res.status(404).send({"error":"Session not found"});
-                    try {
-                        doc.remove((err, docs)=>{
-                            if (!err){
-                                return res.status(200).send({"success":"Session Deleted"});
-                            }
-                            else{
-                                return res.status(400).send({"error":err});
-                            }
-                        });
-                    } catch (e) {
-                        return res.status(400).send({"error":e});
-                    }
+            const session = await SessionModel.findOne({_id:id});
+            if (!session) return res.status(404).send({"error":"Session not found"});
+            if(session.availability === false) return res.status(400).send({"error":"Session has already been booked, you can only reschedule it"});
+            session.remove((err, docs)=>{                                                                                                                                           
+                if (!err){
+                    return res.status(200).send({"success":"Session Deleted"});
                 }
                 else{
                     return res.status(400).send({"error":err});
