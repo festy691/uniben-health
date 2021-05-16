@@ -75,7 +75,8 @@ module.exports =  {
             const oldSession = await SessionModel.findOne(
                 {
                     user:req.body.user,
-                    _id:req.params.id
+                    _id:req.params.id,
+                    sessionDate:sessionDate
                 });
 
             if(oldSession){
