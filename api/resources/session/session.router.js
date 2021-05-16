@@ -28,4 +28,4 @@ sessionRouter.route('/today/:date')
     .get(protect, sessionController.findAllTodaySession);
     
 sessionRouter.route('/reschedule/:id')
-.put(protect, authorize('admin','doctor'), sessionController.findAllTodaySession);
+.put(protect, authorize('admin','doctor'), sessionController.rescheduleSession);
