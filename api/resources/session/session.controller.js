@@ -72,31 +72,50 @@ module.exports =  {
                 return res.status(404).send({'error':'Session not found'});
             }
 
-            const oldSession = await SessionModel.findOne(
+            const oldSession = await SessionModel.find(
                 {
                     user:req.body.user,
-                    _id:req.params.id,
-                    sessionDate:sessionDate
+                    sessionDate:req.body.sessionDate
                 });
 
-            if(oldSession){
+            if(oldSession.length > 0){
                 const data = req.body;
                 const startTime = data.startTime;
                 const endTime = data.endTime;
-                if((getTime(oldSession.startTime) >= getTime(startTime)) && (getTime(oldSession.endTime) > getTime(startTime))){
+
+                for (let i=0; i<oldSession.length; i++){
+                    if((getTime(oldSession[i].startTime) >= getTime(startTime)) && (getTime(oldSession[i].endTime) > getTime(startTime))){
+                        return res.status(404).send({'error':'This time is not free'});
+                    }
+                    if((getTime(oldSession[i].startTime) <= getTime(endTime)) && (getTime(oldSession[i].endTime) >= getTime(endTime))){
+                        return res.status(404).send({'error':'This time is not free'});
+                    }
+                }
+            }
+
+            const newSession = await SessionModel.findOne(
+                {
+                    _id:req.params.id,
+                });
+
+            if(newSession){
+                const data = req.body;
+                const startTime = data.startTime;
+                const endTime = data.endTime;
+                if((getTime(newSession.startTime) >= getTime(startTime)) && (getTime(newSession.endTime) > getTime(startTime))){
                     return res.status(404).send({'error':'This time is not free'});
                 }
-                if((getTime(oldSession.startTime) <= getTime(endTime)) && (getTime(oldSession.endTime) >= getTime(endTime))){
+                if((getTime(newSession.startTime) <= getTime(endTime)) && (getTime(newSession.endTime) >= getTime(endTime))){
                     return res.status(404).send({'error':'This time is not free'});
                 }
             }
             
-            if (req.body.startTime) oldSession.startTime = req.body.startTime;
-            if (req.body.startTime) oldSession.endTime = req.body.endTime;
-            if (req.body.startTime) oldSession.sessionDate = req.body.sessionDate;
-            if (req.body.startTime) oldSession.user = req.body.user;
+            if (req.body.startTime) newSession.startTime = req.body.startTime;
+            if (req.body.startTime) newSession.endTime = req.body.endTime;
+            if (req.body.startTime) newSession.sessionDate = req.body.sessionDate;
+            if (req.body.startTime) newSession.user = req.body.user;
 
-            await oldSession.save((err,doc)=>{
+            await newSession.save((err,doc)=>{
                 if(err){  
                     return res.status(400).send({'error':err});
                 }
