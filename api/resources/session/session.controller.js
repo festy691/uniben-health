@@ -182,7 +182,10 @@ module.exports =  {
 
     async findAllTodaySession(req,res){
         try {
-            await SessionModel.find({user:req.query.user, date:req.query.date},(err, docs)=>{
+            // var date = req.body.date;
+            // date.setHours(0,0,0,0);
+            // date = date.toISOString()
+            await SessionModel.find({user:req.query.user, date:req.params.date},(err, docs)=>{
                 if(!err){
                     if (docs) return res.status(200).send(docs);
                 }

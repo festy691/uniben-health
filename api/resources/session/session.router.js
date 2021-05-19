@@ -22,7 +22,7 @@ sessionRouter.route('/booked/doctor')
     .get(protect, authorize('admin','doctor'),sessionController.getMyBookedSessions);
 
 sessionRouter.route('/patient/:id')
-    .put(protect, sessionController.cancelSession);
+    .put(protect, sessionController.cancelSession); 
 
 sessionRouter.route('/mine/:patient')
     .get(protect, sessionController.findAllMySessions);
