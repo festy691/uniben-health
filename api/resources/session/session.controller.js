@@ -185,7 +185,7 @@ module.exports =  {
             // var date = req.body.date;
             // date.setHours(0,0,0,0);
             // date = date.toISOString()
-            await SessionModel.find({user:req.query.user, date:req.params.date},(err, docs)=>{
+            await SessionModel.find({user:req.query.user, sessionDate:req.params.date},(err, docs)=>{
                 if(!err){
                     if (docs) return res.status(200).send(docs);
                 }
@@ -197,7 +197,7 @@ module.exports =  {
             return res.status(400).send({"error":err});
         }
     },
-
+ 
     async findAllMySessions(req,res){
         try {
             await SessionModel.find({patient:req.params.patient},(err, docs)=>{
