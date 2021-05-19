@@ -143,6 +143,26 @@ module.exports =  {
         }
     },
 
+    async getMyBookedSessions(req,res){
+        try {
+            var date = new Date();
+            date.setHours(0,0,0,0);
+            date = date.toISOString()
+
+            console.log(date);
+            await SessionModel.find({user:req.query.user, availability: false, sessionDate: {$gte: date}},(err, docs)=>{
+                if(!err){
+                    if (docs) return res.status(200).send(docs);
+                }
+                else{
+                    return res.status(400).send({"error":err});
+                }
+            }).populate('user', '_id name image phonenumber email').populate('patient', '_id name image phonenumber email');
+        } catch (e) {
+            return res.status(400).send({"error":e});
+        }
+    },
+
     async findOneSession(req,res){
         try {
             let {id} = req.params;
