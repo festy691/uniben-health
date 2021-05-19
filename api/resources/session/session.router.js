@@ -27,7 +27,7 @@ sessionRouter.route('/patient/:id')
 sessionRouter.route('/mine/:patient')
     .get(protect, sessionController.findAllMySessions);
 
-sessionRouter.route('/today/:date')
+sessionRouter.route('/date/mine')
     .get(protect, sessionController.findAllTodaySession);
     
 sessionRouter.route('/reschedule/:id')

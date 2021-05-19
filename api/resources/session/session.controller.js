@@ -185,7 +185,7 @@ module.exports =  {
             // var date = req.body.date;
             // date.setHours(0,0,0,0);
             // date = date.toISOString()
-            await SessionModel.find({user:req.query.user, sessionDate:req.params.date},(err, docs)=>{
+            await SessionModel.find({user:req.query.user, sessionDate:req.query.date, availability: false},(err, docs)=>{
                 if(!err){
                     if (docs) return res.status(200).send(docs);
                 }
