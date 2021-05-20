@@ -8,6 +8,7 @@ const nodemailer = require("nodemailer");
 const crypto = require('crypto');
 
 const UserModel = require("./user.model");
+const { json } = require("body-parser");
 
 module.exports = {
     async createUser(req,res){
@@ -32,7 +33,7 @@ module.exports = {
             const name = data.name;
             const email = data.email.toLowerCase();
             const phonenumber = data.phonenumber;
-            const gender = data.gender;
+            const gender = data.gender.toLowerCase();
             const address = data.address;
             const password = data.password;
 
@@ -341,10 +342,34 @@ module.exports = {
                 }
             });
         } catch (err) {
-            res.status(400).send({"error":err});
+            return res.status(400).send({"error":err});
         }
     },
 
+    async getUserStats(req,res){
+        try {
+            let d = new Date();
+            d.setMonth(d.getMonth() - 1);
+            let newPatient = await UserModel.find({date:{$gte: d}});
+            console.log(newPatient);
+            let oldPatient = await UserModel.find({date:{$lt: d}});
+            console.log(oldPatient);
+            let male = await UserModel.find({gender:'male'});
+            console.log(male);
+            let female = await UserModel.find({gender:'female'});
+            console.log(female);
+            let data = {
+                "newPatient":newPatient.length,
+                "oldPatient":oldPatient.length,
+                "male":male.length,
+                "female":female.length
+            }
+            return res.status(200).json(data);
+        } catch (err) {
+            return res.status(400).send({"error":err});
+        }
+    },
+ 
     async findAllUsersPaginate(req,res){
         try {
             const {page,perPage,sort} = req.query;

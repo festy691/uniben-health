@@ -34,3 +34,5 @@ userRouter.route('/activate/:id').get(userController.verifyUserToken);
 userRouter.route('/paginate/all').get(userController.findAllUsersPaginate);
 
 userRouter.route('/myid/:id').get(protect, userController.getIdFromToken);
+
+userRouter.route('/stats/patient').get(protect, userController.getUserStats);
