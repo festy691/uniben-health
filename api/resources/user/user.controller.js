@@ -333,14 +333,28 @@ module.exports = {
 
     async getAllUsers(req,res){
         try {
-            UserModel.find((err,docs)=>{
-                if(!err){
-                    res.status(200).send(docs);
-                }
-                else{
-                    res.status(400).send({"error":err});
-                }
-            });
+            const level = req.query.level;
+            if(level){
+                UserModel.find({level:level},(err,docs)=>{
+                    if(!err){
+                        return res.status(200).send(docs);
+                    }
+                    else{
+                        return res.status(400).send({"error":err});
+                    }
+                });
+            }
+            else {
+                UserModel.find((err,docs)=>{
+                    if(!err){
+                        return res.status(200).send(docs);
+                    }
+                    else{
+                        return res.status(400).send({"error":err});
+                    }
+                });
+            }
+            
         } catch (err) {
             return res.status(400).send({"error":err});
         }
@@ -372,12 +386,24 @@ module.exports = {
  
     async findAllUsersPaginate(req,res){
         try {
-            const {page,perPage,sort} = req.query;
-            const options = {
-                page: parseInt(page,10) || 1,
-                limit: parseInt(perPage,10) || 10,
-                sort: {date: -1}
+            const {page,perPage,sort,level} = req.query;
+            const options = {}
+            if (level){
+                options = {
+                    page: parseInt(page,10) || 1,
+                    limit: parseInt(perPage,10) || 10,
+                    level: level,
+                    sort: {date: -1}
+                }
             }
+            else {
+                options = {
+                    page: parseInt(page,10) || 1,
+                    limit: parseInt(perPage,10) || 10,
+                    sort: {date: -1}
+                }
+            }
+            
             await UserModel.paginate({},options,(err, docs)=>{
                 if(!err){
                     if (docs) return res.status(200).send(docs);
