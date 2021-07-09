@@ -21,14 +21,17 @@ sessionRouter.route('/paginate/sessions')
 sessionRouter.route('/booked/doctor')
     .get(protect, authorize('admin','doctor'),sessionController.getMyBookedSessions);
 
+sessionRouter.route('/history/doctor')
+    .get(protect, authorize('admin','doctor'),sessionController.getMyBookedSessions);
+
 sessionRouter.route('/patient/:id')
-    .put(protect, sessionController.cancelSession); 
+    .put(protect, sessionController.cancelSession);
 
 sessionRouter.route('/mine/:patient')
     .get(protect, sessionController.findAllMySessions);
 
 sessionRouter.route('/date/mine')
     .get(protect, sessionController.findAllTodaySession);
-    
+
 sessionRouter.route('/reschedule/:id')
 .put(protect, authorize('admin','doctor'), sessionController.rescheduleSession);

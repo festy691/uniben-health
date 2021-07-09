@@ -16,7 +16,7 @@ module.exports =  {
             if(!user){
                 return res.status(404).send({'error':'User not found'});
             }
-            
+
             const oldSession = await SessionModel.find(
                 {
                     user:req.body.user,
@@ -103,14 +103,14 @@ module.exports =  {
             if(!newSession){
                 return res.status(404).send({'error':'Session not found'});
             }
-            
+
             if (req.body.startTime) newSession.startTime = req.body.startTime;
             if (req.body.startTime) newSession.endTime = req.body.endTime;
             if (req.body.startTime) newSession.sessionDate = req.body.sessionDate;
             if (req.body.startTime) newSession.user = req.body.user;
 
             await newSession.save((err,doc)=>{
-                if(err){  
+                if(err){
                     return res.status(400).send({'error':err});
                 }
                 else{
@@ -131,6 +131,21 @@ module.exports =  {
 
             console.log(date);
             await SessionModel.find({user:req.query.user, sessionDate: {$gte: date}},(err, docs)=>{
+                if(!err){
+                    if (docs) return res.status(200).send(docs);
+                }
+                else{
+                    return res.status(400).send({"error":err});
+                }
+            }).populate('user', '_id name image phonenumber email').populate('patient', '_id name image phonenumber email');
+        } catch (e) {
+            return res.status(400).send({"error":e});
+        }
+    },
+
+    async doctorSessionHistory(req,res){
+        try {
+            await SessionModel.find({user:req.query.user, availability: false},(err, docs)=>{
                 if(!err){
                     if (docs) return res.status(200).send(docs);
                 }
@@ -197,7 +212,7 @@ module.exports =  {
             return res.status(400).send({"error":err});
         }
     },
- 
+
     async findAllMySessions(req,res){
         try {
             await SessionModel.find({patient:req.params.patient},(err, docs)=>{
@@ -290,7 +305,7 @@ module.exports =  {
             const session = await SessionModel.findOne({_id:id});
             if (!session) return res.status(404).send({"error":"Session not found"});
             if(session.availability === false) return res.status(400).send({"error":"Session has already been booked, you can only reschedule it"});
-            session.remove((err, docs)=>{                                                                                                                                           
+            session.remove((err, docs)=>{
                 if (!err){
                     return res.status(200).send({"success":"Session Deleted"});
                 }
